@@ -46,7 +46,7 @@ If you have questions, please open an issue on the repo in git.  I will try my b
 
 Acknowledgements:
 
-Edwin Biemond was, as always, was a great help.  He is doing the heavy lifting...I am assembling.
+Edwin Biemond was, as always, a great help.  He is doing the heavy lifting...I am selfishly assembling.
 
 - Company: Amis, Netherlands
 - Email: biemond__AT__gmail.com
