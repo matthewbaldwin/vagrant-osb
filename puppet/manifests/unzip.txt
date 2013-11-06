@@ -1,0 +1,9 @@
+unzip 
+
+cd rcuHome
+
+rcu -silent -createRepository -connectString database_connect_string -dbUser -database_user -component component
+
+./rcu -silent  -createRepository -databaseType ORACLE -connectString jdbc:oracle:thin:@localhost:1521:xe -dbUser sys -lockSchemas false -dbRole sysdba -schemaPrefix PSNEW -component SOAINFRA 
+
+./rcu -silent  -createRepository -databaseType ORACLE -connectString jdbc:oracle:thin:@localhost:1521:xe -dbUser sys -lockSchemas false -dbRole sysdba -schemaPrefix PSNEW -component SOAINFRA 
