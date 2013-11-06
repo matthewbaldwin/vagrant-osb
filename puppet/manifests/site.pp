@@ -144,58 +144,7 @@ class wls1036{
                     hour    => 06,
                     minute  => 25,
                   }
-                 
-                  #cron { 'mdwlogs' :
-                  #  command => "find ${osMdwHome}/logs -name 'wlst_*.*' -mtime ${mtimeParam} -exec rm {} \\; >> /tmp/wlst_purge.log 2>&1",
-                  #  user    => oracle,
-                  #  hour    => 06,
-                  #  minute  => 30,
-                  #}
-                 
-                 # cron { 'oracle_common_lsinv' :
-                 #   command => "find ${osMdwHome}/oracle_common/cfgtoollogs/opatch/lsinv -name 'lsinventory*.txt' -mtime ${mtimeParam} -exec rm {} \\; >> /tmp/opatch_lsinv_common_purge.log 2>&1",
-                 #   user    => oracle,
-                 #   hour    => 06,
-                 #   minute  => 31,
-                 # }
-                 
-                 #cron { 'oracle_osb1_lsinv' :
-                 #   command => "find ${osMdwHome}/Oracle_OSB1/cfgtoollogs/opatch/lsinv -name 'lsinventory*.txt' -mtime ${mtimeParam} -exec rm {} \\; >> /tmp/opatch_lsinv_osb1_purge.log 2>&1",
-                 #   user    => oracle,
-                 #   hour    => 06,
-                  #  minute  => 32,
-                 # }
-                 
-                  #cron { 'oracle_soa1_lsinv' :
-                  #  command => "find ${osMdwHome}/Oracle_SOA1/cfgtoollogs/opatch/lsinv -name 'lsinventory*.txt' -mtime ${mtimeParam} -exec rm {} \\; >> /tmp/opatch_lsinv_soa1_purge.log 2>&1",
-                  #  user    => oracle,
-                  #  hour    => 06,
-                  #  minute  => 33,
-                  #}
-                 
-                  #cron { 'oracle_common_opatch' :
-                  #  command => "find ${osMdwHome}/oracle_common/cfgtoollogs/opatch -name 'opatch*.log' -mtime ${mtimeParam} -exec rm {} \\; >> /tmp/opatch_common_purge.log 2>&1",
-                  #  user    => oracle,
-                  #  hour    => 06,
-                  #  minute  => 34,
-                  #}
-                 
-                  #cron { 'oracle_osb1_opatch' :
-                  #  command => "find ${osMdwHome}/Oracle_OSB1/cfgtoollogs/opatch -name 'opatch*.log' -mtime ${mtimeParam} -exec rm {} \\; >> /tmp/opatch_osb_purge.log 2>&1",
-                  #  user    => oracle,
-                  #  hour    => 06,
-                  #  minute  => 35,
-                  #}
-                 
-                  #cron { 'oracle_soa1_opatch' :
-                  #  command => "find ${osMdwHome}/Oracle_SOA1/cfgtoollogs/opatch -name 'opatch*.log' -mtime ${mtimeParam} -exec rm {} \\; >> /tmp/opatch_soa_purge.log 2>&1",
-                  #  user    => oracle,
-                  #  hour    => 06,
-                  #  minute  => 35,
-                  #}
-
-
-    }
+     }
 
 } 
 
@@ -316,27 +265,7 @@ class wls1036{
     require       => Wls::Wlscontrol['startOSBSOAAdminServer'],
   }
 
-  # set the defaults
-  # Wls::Changefmwlogdir {
-  #  mdwHome        => $osMdwHome,
-  #  user           => $user,
-  #  group          => $group,
-  #  address        => $address,
-  #  port           => $adminListenPort,
-  #  userConfigFile => "${userConfigDir}/${user}-osbSoaDomain-WebLogicConfig.properties",
-  #  userKeyFile    => "${userConfigDir}/${user}-osbSoaDomain-WebLogicKey.properties", 
-  #  downloadDir    => $downloadDir, 
-  #}
-
- # change the FMW logfiles
-  # wls::changefmwlogdir{
-  # 'AdminServer':
-  #  wlsServer    => "AdminServer",
-  #  logDir       => "/data/logs",
-  #  require      => Wls::Storeuserconfig['osbSoaDomain_keys'],
-  # }
-
-
+  
   #nodemanager configuration and starting
    wls::nodemanager{'nodemanager11g':
      listenPort  => '5556',
