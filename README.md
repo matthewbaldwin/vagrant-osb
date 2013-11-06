@@ -5,10 +5,10 @@ Vagrant OSB Installation
 
 You will need the following files to sucessfully install OSB.  You will need to download them from Oracle and accept their licensing agreement.
 
-1) jdk-7u45-linux-x64.tar.gz
-2) ofm_osb_generic_11.1.1.7_disk1_of_1.zip
-3) p17071663_1036_Generic.zip (This is patchset 6 from Oracle for WebLogic 10..3.6) 
-4) wls1036_generic.jar
+- jdk-7u45-linux-x64.tar.gz
+- ofm_osb_generic_11.1.1.7_disk1_of_1.zip
+- p17071663_1036_Generic.zip (This is patchset 6 from Oracle for WebLogic 10..3.6) 
+- wls1036_generic.jar
 
 Place these files in the root of the project:
 
