@@ -1,5 +1,5 @@
 #
-# one machine setup with 11g XE database plus weblogic 10.3.6 patched to PS 6
+# one machine setup with OSB plus weblogic 10.3.6 patched to PS 6
 #
 # 
 #
@@ -7,17 +7,13 @@
 #
 
 node 'vagrantcentos64' {
-  
-   # include os2, db12c2, wls12_adf2, wls12c_adf_domain2, orautils, maintenance
-   include os2, wls1036, orautils
-   
-   # Class['os2'] -> Class['wls12_adf2'] -> Class['db12c2'] -> Class['wls12c_adf_domain2'] -> Class['maintenance']
 
+   include os2, wls1036, orautils
    Class['os2'] -> Class['wls1036'] -> Class['orautils'] 
 
 }
 
-# operating settings for Database & Middleware
+# operating settings for Middleware
 class os2 {
 
   notify{"wls12 node":}
@@ -28,30 +24,23 @@ class os2 {
     ensure  => absent,
   }
 
-  $install = [ 'binutils.x86_64', 'compat-libstdc++-33.x86_64', 'glibc.x86_64','ksh.x86_64','libaio.x86_64',
-               'libgcc.x86_64', 'libstdc++.x86_64', 'make.x86_64','compat-libcap1.x86_64', 'gcc.x86_64',
-               'gcc-c++.x86_64','glibc-devel.x86_64','libaio-devel.x86_64','libstdc++-devel.x86_64',
-               'sysstat.x86_64','unixODBC-devel','glibc.i686','bc.x86_64', 'unzip.x86_64']
-               
-               
+  $install = [ 'binutils.x86_64','unzip.x86_64']
+
   package { $install:
     ensure  => present,
   }
 
-include jdk7
+  include jdk7
 
   jdk7::install7{ 'jdk1.7.0_45':
-     version              => "7u45" , 
+     version              => "7u45", 
       fullVersion          => "jdk1.7.0_45",
       alternativesPriority => 17000, 
       x64                  => true,
-      # downloadDir          => "/data/install",
       downloadDir          => "/vagrant",
-      urandomJavaFix       => false,
-      # sourcePath           => "puppet:///modules/jdk7/"
+      urandomJavaFix       => true,
       sourcePath           => "/vagrant"
   }
-
 
   class { 'limits':
     config => {
@@ -82,8 +71,6 @@ include jdk7
   sysctl { 'net.core.wmem_default':         ensure => 'present', permanent => 'yes', value => '262144',}
   sysctl { 'net.core.wmem_max':             ensure => 'present', permanent => 'yes', value => '1048576',}
 
-
-
   exec { "create swap file":
     command => "/bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=8192",
     creates => "/var/swap.1",
@@ -100,55 +87,47 @@ include jdk7
 
 class wls1036{
 
+  $jdkWls11gJDK = 'jdk1.7.0_45'
+  $wls11gVersion = "1036"
+                      
+  $puppetDownloadMntPoint = "/vagrant"
 
-   class { 'wls::urandomfix' :}
+  $osOracleHome = "/opt/oracle"
+  $osMdwHome    = "/opt/oracle/wls/Middleware11gR1"
+  $osWlHome     = "/opt/oracle/wls/Middleware11gR1/wlserver_10.3"
+  $user         = "oracle"
+  $group        = "dba"
+  $downloadDir  = "/data/install"
+  $logDir       = "/data/logs"
 
-   $jdkWls11gJDK = 'jdk1.7.0_45'
-   $wls11gVersion = "1036"
-                       
-#  $puppetDownloadMntPoint = "puppet:///middleware/"
-   #$puppetDownloadMntPoint = "puppet:///modules/wls/" 
-   $puppetDownloadMntPoint = "/vagrant"                      
- 
-   $osOracleHome = "/opt/oracle"
-   $osMdwHome    = "/opt/oracle/wls/Middleware11gR1"
-   $osWlHome     = "/opt/oracle/wls/Middleware11gR1/wlserver_10.3"
-   $user         = "oracle"
-   $group        = "dba"
-   $downloadDir  = "/data/install"
-   $logsDir      = "/data/logs"
+  $wlsDomainName   = "osbDomain"
+  $osTemplate      = "osb"
+  $adminListenPort = "7001"
+  $nodemanagerPort = "5556"
+  $address         = "localhost"
+  $wlsUser         = "weblogic"
+  $password        = "welcome1"   
 
-   $wlsDomainName   = "osbDomain"
-   $osTemplate      = "osb"
-   $adminListenPort = "7001"
-   $nodemanagerPort = "5556"
-   $address         = "localhost"
-   $wlsUser         = "weblogic"
-   $password        = "welcome1"   
+  class{'orautils':
+    osOracleHomeParam      => $osOracleHome,
+    oraInventoryParam      => "${osOracleHome}/oraInventory",
+    osDomainTypeParam      => "admin",
+    osLogFolderParam       => $logDir,
+    osDownloadFolderParam  => $downloadDir,
+    osMdwHomeParam         => $osMdwHome,
+    osWlHomeParam          => $osWlHome,
+    oraUserParam           => $user,
+    osDomainParam          => $wlsDomainName,
+    osDomainPathParam      => "${osMdwHome}/user_projects/domains/${wlsDomainName}",
+    nodeMgrPathParam       => "${osMdwHome}/wlserver_10.3/server/bin",
+    nodeMgrPortParam       => 5556,
+    wlsUserParam           => $wlsUser,
+    wlsPasswordParam       => $password,
+    wlsAdminServerParam    => "AdminServer",
+  } 
 
-  case $operatingsystem {
-    CentOS, RedHat, OracleLinux, Ubuntu, Debian: { 
-      $mtimeParam = "1"
-    }
-    Solaris: { 
-      $mtimeParam = "+1"
-    }
-  }
 
-  case $operatingsystem {
-    CentOS, RedHat, OracleLinux, Ubuntu, Debian, Solaris: { 
-
-                  cron { 'cleanwlstmp' :
-                    command => "find /tmp -name '*.tmp' -mtime ${mtimeParam} -exec rm {} \\; >> /tmp/tmp_purge.log 2>&1",
-                    user    => oracle,
-                    hour    => 06,
-                    minute  => 25,
-                  }
-     }
-
-} 
-
- # set the defaults
+  # set the defaults
   Wls::Installwls {
     version                => $wls11gVersion,
     fullJDKName            => $jdkWls11gJDK,
@@ -192,24 +171,31 @@ class wls1036{
 
   # install
   wls::installwls{'11g1036':
-          # create the user and group here if we creates db after it will use these vaules
-           createUser   => true, 
+    # create the user and group here if we creates db after it will use these vaules
+    createUser   => true, 
   }
   
-        # weblogic patch Patchset 6 (October 2013)
+  # weblogic patch Patchset 6 (October 2013)
   wls::bsupatch{'p17071663':
      patchId      => 'BYJ1',    
      patchFile    => 'p17071663_1036_Generic.zip',  
      require      => Wls::Installwls['11g1036'],
   }
 
+  wls::installosb{'osbPS6':
+    osbFile      => 'ofm_osb_generic_11.1.1.7.0_disk1_1of1.zip',
+    require      => Wls::Bsupatch['p17071663'],
+  }
 
-   wls::installosb{'osbPS6':
-     osbFile      => 'ofm_osb_generic_11.1.1.7.0_disk1_1of1.zip',
-     require      => Wls::Bsupatch['p17071663'],
-   }
+  #nodemanager configuration and starting
+  wls::nodemanager{'nodemanager11g':
+    listenPort  => '5556',
+    logDir      => $logDir,
+    require     => Wls::Installosb['osbPS6'],
+  }
 
-   wls::wlsdomain{'osbDomain':
+
+  wls::wlsdomain{'osbDomain':
     wlHome          => $osWlHome,
     mdwHome         => $osMdwHome,
     fullJDKName     => $jdkWls11gJDK, 
@@ -219,16 +205,16 @@ class wls1036{
     adminListenAdr  => "localhost",
     adminListenPort => $adminListenPort,
     nodemanagerPort => $nodemanagerPort,
-    wlsUser         => "weblogic",
-    password        => "welcome1",
+    wlsUser         => $wlsUser,
+    password        => $password,
     user            => $user,
     group           => $group,    
-    logDir          => "/data/logs",
-    downloadDir      => $downloadDir, 
-    require         => Wls::Installosb['osbPS6'],
- }
+    logDir          => $logDir,
+    downloadDir     => $downloadDir, 
+    require         => Wls::Nodemanager['nodemanager11g'],
+  }
 
- # start AdminServers for configuration
+  # start AdminServers for configuration
   wls::wlscontrol{'startOSBSOAAdminServer':
    wlsDomain     => $wlsDomainName,
    wlsDomainPath => "${osMdwHome}/user_projects/domains/${wlsDomainName}",
@@ -236,16 +222,15 @@ class wls1036{
    action        => 'start',
    wlHome        => $osWlHome,
    fullJDKName   => $jdkWls11gJDK,  
-   wlsUser       => "weblogic",
-   password      => "welcome1",
+   wlsUser       => $wlsUser,
+   password      => $password,
    address       => $address,
    port          => $nodemanagerPort,
    user          => $user,
    group         => $group,
    downloadDir   => $downloadDir,
    logOutput     => true, 
-   # require       =>  Wls::Wlsdomain['osbDomain'],
-   require       => Wls::Nodemanager['nodemanager11g'],
+   require       => Wls::Wlsdomain['osbDomain'],
   }
 
   # create keystores for automatic WLST login
@@ -265,21 +250,13 @@ class wls1036{
     require       => Wls::Wlscontrol['startOSBSOAAdminServer'],
   }
 
-  
-  #nodemanager configuration and starting
-   wls::nodemanager{'nodemanager11g':
-     listenPort  => '5556',
-     # logDir      => "/data/logs",
-     require     => Wls::Wlsdomain['osbDomain'],
-   }
    
-   orautils::nodemanagerautostart{"autostart ${wlsDomainName}":
-      version     => "1111",
-      wlHome      => $osWlHome, 
-      user        => $user,
-      # logDir   => "/data/logs",
-      require     => Wls::Nodemanager['nodemanager11g'];
-   }
+  orautils::nodemanagerautostart{"autostart ${wlsDomainName}":
+    version     => "1111",
+    wlHome      => $osWlHome, 
+    user        => $user,
+    require     => Wls::Nodemanager['nodemanager11g'];
+  }
 
 
 }
