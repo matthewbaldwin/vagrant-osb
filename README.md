@@ -46,12 +46,12 @@ If you have questions, please open an issue on the repo in git.  I will try my b
 
 Acknowledgements:
 
-Edwin Biemond was, as always, was a great help.
+Edwin Biemond was, as always, was a great help.  He is doing the heavy lifting...I am assembling.
 
-Company: Amis, Netherlands
-Email: biemond__AT__gmail.com
-Blog: http://biemond.blogspot.com
-LinkedIn: http://www.linkedin.com/in/biemond
-Twitter: http://twitter.com/biemond
-Git: https://github.com/biemond
+- Company: Amis, Netherlands
+- Email: biemond__AT__gmail.com
+- Blog: http://biemond.blogspot.com
+- LinkedIn: http://www.linkedin.com/in/biemond
+- Twitter: http://twitter.com/biemond
+- Git: https://github.com/biemond
 
