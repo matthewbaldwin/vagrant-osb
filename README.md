@@ -1,7 +1,7 @@
 vagrant-osb
 ===========
 
-Vagrant OSB Installation - Total Install time on a 5400RPM Mac Mini slightly over 20 minutes.
+Vagrant OSB Installation - Total Install time on a 5400RPM Mac Mini about 14 minutes.
 
 I highly suggest, I think this is more of a requirement, that you do this install while online.  Preparing the operating system does require yum calls that the script will need to perform as well as modifications are made to Centos 6.4 box.  Remember, your first download of the centos64.box (750mb) might take a couple of extra minutes.  However, once you have the box, you have it for as long as you want. ;-)
 
@@ -26,7 +26,7 @@ If you do not download Patchset 6, then you will need to modify the site.pp in t
 
 Notes about the install:
 
-Once it runs, you will have a running AdminServer and nodemanager. There is an osbserver which is shutdown.  You can start the osbserver if you want from Fusion Middleware Control or from the wls console.  If you are developing proxies, I don't see any reason to start that server until you need it.
+Once it runs, you will have a running AdminServer and nodemanager. There is an osb_server1 which is shutdown.  You can start the osb_server1 if you want from Fusion Middleware Control or from the wls console.  If you are developing proxies, I don't see any reason to start that server until you need it.
 
 Username and passwords are weblogic/welcome1
 
@@ -43,6 +43,10 @@ I am currently using VirtualBox 4.2.18 r88780
 Questions:
 
 If you have questions, please open an issue on the repo in git.  I will try my best to help as soon as possible.
+
+My Blog is vbatik.wordpress.com
+
+http://vbatik.wordpress.com/2013/11/07/install-oracle-service-bus-with-vagrant/
 
 Acknowledgements:
 
