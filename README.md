@@ -30,9 +30,9 @@ Once it runs, you will have a running AdminServer and nodemanager. There is an o
 
 Username and passwords are weblogic/welcome1
 
-http://localhost:7001/console - WLS Console
-http://localhost:7001/sbconsole - OSB Console 
-http://localhost:7001/em - Fusion Middleware Control for the osbDomain
+- http://localhost:7001/console - WLS Console
+- http://localhost:7001/sbconsole - OSB Console 
+- http://localhost:7001/em - Fusion Middleware Control for the osbDomain
 
 Testing:
 
