@@ -20,7 +20,9 @@ Place these files in the root of the project:
 
 You don't necessarily need the patch file, put it is easily obtained:
 
-http://support.oracle.com and then login with your OTN Account.
+http://support.oracle.com and then login with your OTN Account.  Here is how you download this patch if you have an OTN account
+
+- http://mbaldwin.clarify-it.com/d/de29wr
 
 If you do not download Patchset 6, then you will need to modify the site.pp in the manifests directory so that the Bsu is not run.It will fail...obviously without the file.
 
