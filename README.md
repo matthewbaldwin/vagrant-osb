@@ -24,6 +24,10 @@ http://support.oracle.com and then login with your OTN Account.  Here is how you
 
 - http://mbaldwin.clarify-it.com/d/de29wr
 
+If you are not downloading the patchset, then these are the lines you need to comment out in site.pp
+
+- http://mbaldwin.clarify-it.com/d/hy77xa
+
 If you do not download Patchset 6, then you will need to modify the site.pp in the manifests directory so that the Bsu is not run.It will fail...obviously without the file.
 
 Notes about the install:
