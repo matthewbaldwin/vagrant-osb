@@ -81,6 +81,20 @@ class os2 {
     require => Exec["create swap file"],
     unless => "/sbin/swapon -s | grep /var/swap.1",
   }
+  
+  #add swap file entry to fstab
+  exec {"add swapfile entry to fstab":
+    command => "/bin/echo >>/etc/fstab /var/swap.1 swap swap defaults 0 0",
+    require => Exec["attach swap file"],
+    user => root,
+    unless => "/bin/grep '^/var/swap.1' /etc/fstab 2>/dev/null",
+  }
+
+  service { iptables:
+        enable    => false,
+        ensure    => false,
+        hasstatus => true,
+  }
 
  
 }
